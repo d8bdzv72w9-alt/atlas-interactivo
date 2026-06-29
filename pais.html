@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Información del País - Atlas</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="style/style.css" />
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-logo"> Atlas Interactivo</div>
+    <div class="nav-center">
+      <input type="text" id="buscador" class="search-input" placeholder=" Buscar país..." autocomplete="off" />
+      <ul id="sugerencias" class="sugerencias-lista"></ul>
+    </div>
+    <a href="quiz.html" class="btn-quiz">Quiz</a>
+  </nav>
+
+  <main class="pais-container">
+    <a href="mapa.html" class="btn-volver">← Volver al mapa</a>
+    <div class="pais-card">
+      <div class="pais-header">
+        <img id="bandera-img" class="pais-bandera-img" src="" alt="Bandera" />
+        <div class="pais-datos">
+          <h1 id="nombre-pais">País</h1>
+          <p><span class="dato-label">Capital:</span> <span id="capital">—</span></p>
+          <p><span class="dato-label">Población:</span> <span id="poblacion">—</span></p>
+          <p><span class="dato-label">Idioma:</span> <span id="idioma">—</span></p>
+          <p><span class="dato-label">Continente:</span> <span id="continente">—</span></p>
+        </div>
+      </div>
+      <div class="pais-seccion">
+        <h2>Historia</h2>
+        <p id="historia">—</p>
+      </div>
+      <div class="pais-doble">
+        <div class="pais-seccion">
+          <h2>Economía</h2>
+          <p id="economia">—</p>
+        </div>
+        <div class="pais-seccion">
+          <h2>Cultura</h2>
+          <p id="cultura">—</p>
+        </div>
+      </div>
+      <div class="pais-quiz-btn">
+        <a href="quiz.html" class="btn-primary">Ir al Quiz de este país</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>Elaborado por: Oswaldo Ernesto Trinidad Campos &amp; Gerson Armando Villalta Reyna &mdash; Bach. Técnico Desarrollo de Software 3-3 &mdash; INFRAMEN 2026</p>
+  </footer>
+
+  <script>
+    const datosPaises = {
+      'México':          { codigo:'mx', capital:'Ciudad de México', poblacion:'130 millones', idioma:'Español', continente:'América del Norte', historia:'México tiene una historia rica que abarca desde las civilizaciones prehispánicas como los aztecas y mayas, pasando por la conquista española en el siglo XVI, la independencia en 1821 y la Revolución Mexicana de 1910.', economia:'México es la segunda economía más grande de América Latina. Sus principales actividades son la industria manufacturera, el petróleo, el turismo y la agricultura.', cultura:'La cultura mexicana es una fusión de tradiciones indígenas y españolas. Destaca su gastronomía (reconocida por la UNESCO), el mariachi, el Día de Muertos y su arte muralista.' },
+      'Estados Unidos':  { codigo:'us', capital:'Washington D.C.', poblacion:'335 millones', idioma:'Inglés', continente:'América del Norte', historia:'Estados Unidos declaró su independencia del Reino Unido en 1776. A lo largo de los siglos XIX y XX se consolidó como la mayor potencia económica y militar del mundo.', economia:'Es la economía más grande del mundo. Lidera sectores como la tecnología (Silicon Valley), las finanzas, la industria aeroespacial, el entretenimiento y la agricultura.', cultura:'La cultura estadounidense es diversa y multicultural. Destaca en cine (Hollywood), música (jazz, rock, hip-hop), deportes como el fútbol americano y el béisbol, y la comida rápida.' },
+      'Canadá':          { codigo:'ca', capital:'Ottawa', poblacion:'38 millones', idioma:'Inglés y Francés', continente:'América del Norte', historia:'Canadá fue colonizada por Francia y Gran Bretaña, obteniendo su independencia progresivamente hasta la plena soberanía en 1982. Es conocida por su política de multiculturalismo.', economia:'Canadá posee una economía desarrollada basada en los recursos naturales (petróleo, madera, minerales), la manufactura, la tecnología y los servicios financieros.', cultura:'La cultura canadiense mezcla influencias británicas, francesas e indígenas. Es famosa por el hockey sobre hielo, el maple syrup, la naturaleza virgen y sus ciudades cosmopolitas.' },
+      'Cuba':            { codigo:'cu', capital:'La Habana', poblacion:'11 millones', idioma:'Español', continente:'América del Norte', historia:'Cuba fue colonia española hasta 1898. En 1959, la Revolución Cubana liderada por Fidel Castro estableció un gobierno socialista que persiste hasta hoy.', economia:'Cuba tiene una economía planificada por el Estado. El turismo, el níquel, el tabaco y el azúcar son sus principales fuentes de ingresos.', cultura:'Cuba es reconocida mundialmente por su música (salsa, son, mambo), su danza, la arquitectura colonial de La Habana, el ron y los puros habanos.' },
+      'El Salvador':     { codigo:'sv', capital:'San Salvador', poblacion:'6.5 millones', idioma:'Español', continente:'América Central', historia:'El Salvador declaró su independencia de España en 1821. Durante el siglo XX vivió una guerra civil (1979-1992) que marcó profundamente al país. Es el país más pequeño de América Central.', economia:'Su economía se basa en las remesas del exterior, la industria textil (maquilas), el café, la caña de azúcar y el turismo. En 2021 adoptó el Bitcoin como moneda de curso legal.', cultura:'La cultura salvadoreña mezcla tradiciones indígenas pipiles y coloniales españolas. Destaca la pupusa (plato nacional), las fiestas agostinas, la artesanía de Ilobasco y la música de marimba.' },
+      'Guatemala':       { codigo:'gt', capital:'Ciudad de Guatemala', poblacion:'17 millones', idioma:'Español', continente:'América Central', historia:'Guatemala fue el corazón de la civilización maya y luego colonia española. Obtuvo su independencia en 1821 y vivió un conflicto armado interno entre 1960 y 1996.', economia:'Su economía se basa en la agricultura (café, banano, cardamomo), las remesas, el turismo y la industria textil.', cultura:'Guatemala tiene una rica herencia maya. Destaca Tikal, los mercados indígenas de Chichicastenango, los trajes típicos multicolores y el quetzal como símbolo nacional.' },
+      'Honduras':        { codigo:'hn', capital:'Tegucigalpa', poblacion:'10 millones', idioma:'Español', continente:'América Central', historia:'Honduras fue colonizada por España y obtuvo su independencia en 1821. Las ruinas mayas de Copán son uno de sus principales legados históricos.', economia:'Su economía se basa en las remesas, la agricultura (banano, café, palma africana), la maquila textil y el turismo en las Islas de la Bahía.', cultura:'La cultura hondureña mezcla tradiciones indígenas, africanas y españolas. Destaca la gastronomía (baleadas), la música de punta garífuna y las festividades de Semana Santa.' },
+      'Argentina':       { codigo:'ar', capital:'Buenos Aires', poblacion:'46 millones', idioma:'Español', continente:'América del Sur', historia:'Argentina fue colonizada por España y declaró su independencia en 1816. A lo largo del siglo XX vivió períodos de auge económico y gobiernos militares, hasta consolidar su democracia en 1983.', economia:'Argentina es una de las economías más grandes de América Latina. Destaca en la exportación de soja, carne vacuna, vino y litio.', cultura:'Argentina es la cuna del tango, declarado Patrimonio de la Humanidad. Su cultura mezcla influencias europeas e indígenas, con pasión por el fútbol, el asado y la literatura.' },
+      'Brasil':          { codigo:'br', capital:'Brasilia', poblacion:'215 millones', idioma:'Portugués', continente:'América del Sur', historia:'Brasil fue colonia portuguesa desde 1500. Se independizó en 1822 y es el país más grande de América del Sur, con una historia marcada por la esclavitud y la diversidad étnica.', economia:'Brasil tiene la mayor economía de América Latina. Destaca en agricultura (soja, café, caña), minería, industria manufacturera, petróleo y tecnología.', cultura:'Brasil es famoso por el carnaval de Río, el fútbol, la samba, la bossa nova, el Amazonas y una gastronomía diversa con influencias indígenas, africanas y europeas.' },
+      'Colombia':        { codigo:'co', capital:'Bogotá', poblacion:'51 millones', idioma:'Español', continente:'América del Sur', historia:'Colombia fue colonizada por España y obtuvo su independencia en 1819 liderada por Simón Bolívar. En el siglo XX enfrentó décadas de conflicto armado interno.', economia:'Su economía se basa en el petróleo, el café, las flores, el carbón y el turismo. Colombia es el mayor exportador de flores del mundo tras los Países Bajos.', cultura:'Colombia es reconocida por el vallenato, el carnaval de Barranquilla, el realismo mágico de García Márquez, su biodiversidad y su gastronomía.' },
+      'Chile':           { codigo:'cl', capital:'Santiago', poblacion:'19 millones', idioma:'Español', continente:'América del Sur', historia:'Chile fue colonia española y obtuvo su independencia en 1818. En 1973 vivió un golpe militar que instauró la dictadura de Pinochet hasta 1990.', economia:'Chile tiene una de las economías más estables de América Latina. Destaca en la minería del cobre (mayor productor mundial), el vino, la pesca y los servicios financieros.', cultura:'La cultura chilena mezcla tradiciones mapuches y españolas. Destaca la cueca (danza nacional), la gastronomía, el vino, la poesía (Neruda, Mistral) y el desierto de Atacama.' },
+      'Perú':            { codigo:'pe', capital:'Lima', poblacion:'33 millones', idioma:'Español, Quechua', continente:'América del Sur', historia:'Perú fue el centro del Imperio Inca, la civilización más grande de América. Fue conquistado por España en 1532 y obtuvo su independencia en 1821.', economia:'Su economía se basa en la minería (oro, cobre, plata), la agricultura, la pesca y el turismo (Machu Picchu es una de las atracciones más visitadas del mundo).', cultura:'Perú tiene una riquísima herencia inca. Machu Picchu, el lago Titicaca, la gastronomía peruana (reconocida mundialmente) y la música folklórica son íconos culturales.' },
+      'Venezuela':       { codigo:'ve', capital:'Caracas', poblacion:'28 millones', idioma:'Español', continente:'América del Sur', historia:'Venezuela obtuvo su independencia en 1821 liderada por Simón Bolívar. En el siglo XX vivió una bonanza petrolera. Desde 1999 bajo el chavismo atraviesa una profunda crisis.', economia:'Venezuela posee las mayores reservas de petróleo del mundo, que representan la base de su economía. La crisis política ha generado una grave recesión económica.', cultura:'Venezuela es conocida por el joropo (música y danza nacional), el Angel Falls (la cascada más alta del mundo), la gastronomía criolla y el béisbol como deporte nacional.' },
+      'Francia':         { codigo:'fr', capital:'París', poblacion:'68 millones', idioma:'Francés', continente:'Europa', historia:'Francia es una de las naciones más influyentes de la historia occidental. Sede de la Revolución Francesa (1789), el Imperio Napoleónico y protagonista de ambas guerras mundiales.', economia:'Francia posee la séptima economía mundial. Destaca en turismo, industria aeroespacial, moda, vinos y energía nuclear.', cultura:'Cuna del arte, la filosofía y la gastronomía europea. Francia es reconocida por la Torre Eiffel, el Louvre, la moda parisina y su cocina declarada Patrimonio por la UNESCO.' },
+      'España':          { codigo:'es', capital:'Madrid', poblacion:'47 millones', idioma:'Español', continente:'Europa', historia:'España fue un gran Imperio colonial que dominó América durante tres siglos. En el siglo XX vivió una guerra civil (1936-1939) y la dictadura de Franco hasta 1975.', economia:'España tiene la cuarta economía de la Eurozona. Destacan el turismo, la industria automotriz, la agricultura (aceite de oliva, vino) y los servicios financieros.', cultura:'España es famosa por el flamenco, la arquitectura de Gaudí, la Sagrada Familia, el fútbol, la gastronomía (paella, tapas) y sus festivales como la Tomatina y San Fermín.' },
+      'Alemania':        { codigo:'de', capital:'Berlín', poblacion:'84 millones', idioma:'Alemán', continente:'Europa', historia:'Alemania fue unificada en 1871. Protagonizó ambas guerras mundiales y estuvo dividida en República Federal y República Democrática hasta su reunificación en 1990.', economia:'Alemania tiene la mayor economía de Europa. Lidera en industria automotriz (BMW, Mercedes, Volkswagen), ingeniería, química y exportaciones.', cultura:'Alemania es reconocida por Beethoven, Bach, Goethe, la Oktoberfest, la arquitectura del Castillo de Neuschwanstein, la cerveza y el carnaval de Colonia.' },
+      'Italia':          { codigo:'it', capital:'Roma', poblacion:'60 millones', idioma:'Italiano', continente:'Europa', historia:'Italia fue el centro del Imperio Romano y del Renacimiento. Se unificó como nación en 1861. En el siglo XX vivió el fascismo de Mussolini antes de convertirse en república en 1946.', economia:'Italia tiene la tercera economía de la Eurozona. Destaca en moda (Gucci, Prada), diseño, automóviles de lujo (Ferrari, Lamborghini), turismo y agricultura (vino, aceite).', cultura:'Italia es la cuna del Renacimiento, el arte, la ópera y la gastronomía mundial. El Coliseo, el Vaticano, Venecia y la pizza y la pasta son íconos culturales universales.' },
+      'Reino Unido':     { codigo:'gb', capital:'Londres', poblacion:'67 millones', idioma:'Inglés', continente:'Europa', historia:'El Reino Unido fue el centro del Imperio Británico, el más grande de la historia. Pionero en la Revolución Industrial y protagonista clave en ambas guerras mundiales.', economia:'Es la sexta economía mundial. Destaca en servicios financieros (City of London), industria creativa, tecnología, farmacéutica y turismo.', cultura:'El Reino Unido ha dado al mundo a Shakespeare, los Beatles, Harry Potter, el fútbol moderno, el té de las cinco y la monarquía más famosa del mundo.' },
+      'Portugal':        { codigo:'pt', capital:'Lisboa', poblacion:'10 millones', idioma:'Portugués', continente:'Europa', historia:'Portugal fue una gran potencia marítima que colonizó Brasil y estableció rutas comerciales a África y Asia. Vivió una dictadura hasta la Revolución de los Claveles en 1974.', economia:'Su economía se basa en el turismo, la industria textil, el corcho (mayor productor mundial), el vino de Oporto y la pesca.', cultura:'Portugal es conocido por el fado (música melancólica), los pasteles de nata, el surf, la arquitectura manuelina y su papel histórico en la exploración marítima mundial.' },
+      'Rusia':           { codigo:'ru', capital:'Moscú', poblacion:'144 millones', idioma:'Ruso', continente:'Europa/Asia', historia:'Rusia fue el corazón del Imperio Ruso y luego de la Unión Soviética (1922-1991). Es el país más grande del mundo y jugó un papel decisivo en la Segunda Guerra Mundial.', economia:'Rusia tiene una economía basada en los recursos naturales, especialmente el petróleo y el gas natural, además de la industria militar, la minería y la agricultura.', cultura:'Rusia ha aportado al mundo a Tolstói, Dostoievski, Chaikovski, el ballet del Bolshói, la arquitectura de la Plaza Roja, el ajedrez y los famosos muñecos Matrioshka.' },
+      'China':           { codigo:'cn', capital:'Pekín', poblacion:'1,400 millones', idioma:'Mandarín', continente:'Asia', historia:'China posee una de las civilizaciones más antiguas del mundo, con más de 5,000 años de historia. En 1949 se proclamó la República Popular China bajo el liderazgo de Mao Zedong.', economia:'China es la segunda economía más grande del mundo. Es el mayor exportador global y lidera en manufactura, tecnología, construcción y comercio electrónico.', cultura:'La cultura china es milenaria y diversa. Incluye el kung fu, la caligrafía, la medicina tradicional, la gastronomía y festividades como el Año Nuevo Chino.' },
+      'Japón':           { codigo:'jp', capital:'Tokio', poblacion:'125 millones', idioma:'Japonés', continente:'Asia', historia:'Japón fue gobernado por emperadores y shogunes durante siglos. Tras la Segunda Guerra Mundial se convirtió en una democracia y protagonizó un milagro económico que lo posicionó como potencia mundial.', economia:'Japón posee la tercera economía mundial. Lidera en industria automotriz (Toyota, Honda), electrónica (Sony, Panasonic) y robótica.', cultura:'Japón combina tradición y modernidad. Es conocido por el anime, el manga, las artes marciales, la ceremonia del té, el sushi y los festivales de flor de cerezo.' },
+      'India':           { codigo:'in', capital:'Nueva Delhi', poblacion:'1,400 millones', idioma:'Hindi, Inglés', continente:'Asia', historia:'India es una de las civilizaciones más antiguas del mundo. Fue colonizada por el Imperio Británico y obtuvo su independencia en 1947 liderada por Mahatma Gandhi.', economia:'India es la quinta economía mundial y la de mayor crecimiento. Destaca en tecnología (Bangalore es el Silicon Valley asiático), servicios, textil y agricultura.', cultura:'India es cuna del hinduismo, el budismo y el yoga. El Taj Mahal, el cine de Bollywood, la gastronomía con especias, la música clásica y los coloridos festivales son íconos culturales.' },
+      'Corea del Sur':   { codigo:'kr', capital:'Seúl', poblacion:'52 millones', idioma:'Coreano', continente:'Asia', historia:'Corea del Sur se separó de Corea del Norte tras la guerra de 1950-1953. Desde entonces experimentó el "Milagro del Han", pasando de ser un país pobre a una potencia tecnológica.', economia:'Corea del Sur es la cuarta economía de Asia. Lidera en electrónica (Samsung, LG), automóviles (Hyundai, Kia), construcción naval y entretenimiento.', cultura:'Corea del Sur exporta el Hallyu (ola coreana): el K-pop (BTS, BLACKPINK), el K-drama, el cine (Parásitos ganó el Oscar), el taekwondo y la gastronomía (kimchi, bibimbap).' },
+      'Arabia Saudita':  { codigo:'sa', capital:'Riad', poblacion:'35 millones', idioma:'Árabe', continente:'Asia', historia:'Arabia Saudita fue fundada como reino en 1932 por Abdelaziz ibn Saud. Es el guardián de los lugares más sagrados del Islam: La Meca y Medina.', economia:'Arabia Saudita tiene la mayor economía del mundo árabe. Posee las segundas reservas de petróleo más grandes del mundo. Está diversificando su economía con Vision 2030.', cultura:'La cultura saudí está profundamente influenciada por el Islam. Destaca la arquitectura islámica, la hospitalidad beduina, la gastronomía árabe y el desierto de Rub al Jali.' },
+      'Kenia':           { codigo:'ke', capital:'Nairobi', poblacion:'55 millones', idioma:'Swahili, Inglés', continente:'África', historia:'Kenia fue colonizada por el Imperio Británico y obtuvo su independencia en 1963. Es cuna del Homo sapiens y hogar de más de 40 grupos étnicos distintos.', economia:'La economía de Kenia se basa en el turismo de safari, el té y café, la floricultura y un creciente sector tecnológico conocido como Silicon Savannah.', cultura:'Kenia es famosa por sus tradiciones masái, su música benga y su excepcional fauna en reservas como el Masái Mara. El atletismo keniano es reconocido mundialmente.' },
+      'Nigeria':         { codigo:'ng', capital:'Abuya', poblacion:'220 millones', idioma:'Inglés', continente:'África', historia:'Nigeria es el país más poblado de África. Fue colonia británica hasta 1960. Su historia reciente incluye una guerra civil (1967-1970) y alternancia entre gobiernos militares y democráticos.', economia:'Nigeria tiene la mayor economía de África. El petróleo representa el 90% de sus exportaciones. También destacan la agricultura, los servicios financieros y Nollywood.', cultura:'Nigeria es conocida por Nollywood (tercera industria cinematográfica del mundo), la música afrobeats (Burna Boy, Wizkid), el arte yoruba y su diversidad étnica y gastronómica.' },
+      'Egipto':          { codigo:'eg', capital:'El Cairo', poblacion:'104 millones', idioma:'Árabe', continente:'África', historia:'Egipto alberga una de las civilizaciones más antiguas del mundo, con más de 5,000 años de historia. Las pirámides de Guiza, la Esfinge y el río Nilo son testigos de su grandeza.', economia:'La economía egipcia se basa en el turismo, el Canal de Suez (uno de los más importantes del mundo), el petróleo y el gas, las remesas y la agricultura en el Nilo.', cultura:'Egipto es sinónimo de las pirámides de Guiza, la Esfinge, el Nilo, la escritura jeroglífica, el cine árabe y una gastronomía con platos como el koshari y el falafel.' },
+      'Sudáfrica':       { codigo:'za', capital:'Pretoria', poblacion:'60 millones', idioma:'11 idiomas oficiales', continente:'África', historia:'Sudáfrica vivió el apartheid (segregación racial) hasta 1994, cuando Nelson Mandela fue elegido presidente en las primeras elecciones democráticas multirraciales del país.', economia:'Sudáfrica tiene la economía más industrializada de África. Destaca en minería (oro, diamantes, platino), manufactura, agricultura y turismo.', cultura:'Sudáfrica es conocida como la Nación Arcoíris por su diversidad étnica. Destaca el rugby, el cricket, la música mbube, la gastronomía y parques como el Kruger.' },
+      'Marruecos':       { codigo:'ma', capital:'Rabat', poblacion:'37 millones', idioma:'Árabe, Bereber', continente:'África', historia:'Marruecos tiene una historia milenaria influenciada por bereberes, árabes y europeos. Fue protectorado francés y español hasta su independencia en 1956.', economia:'Su economía se basa en el turismo, la agricultura (fosfatos, aceite de argán, frutos), la pesca, las remesas y una creciente industria automotriz.', cultura:'Marruecos es famoso por sus medinas (ciudades antiguas), los zocos de Marrakech, la arquitectura árabe-andaluza, el té de menta, el cuscús y los festivales de música Gnawa.' },
+      'Australia':       { codigo:'au', capital:'Canberra', poblacion:'26 millones', idioma:'Inglés', continente:'Oceanía', historia:'Australia fue habitada por pueblos aborígenes durante 65,000 años. Fue colonizada por Gran Bretaña en 1788 y se convirtió en nación federal independiente en 1901.', economia:'Australia tiene una de las economías más desarrolladas del mundo. Destaca en minería (hierro, carbón, oro), agricultura, turismo y servicios financieros.', cultura:'Australia es conocida por la Ópera de Sídney, la Gran Barrera de Coral, los canguros y koalas, el críquet, el surf y la cultura aborigen con el didgeridoo y el arte rupestre.' },
+      'Nueva Zelanda':   { codigo:'nz', capital:'Wellington', poblacion:'5 millones', idioma:'Inglés, Maorí', continente:'Oceanía', historia:'Nueva Zelanda fue habitada por los maoríes durante siglos antes de la colonización británica en el siglo XIX. En 1893 fue el primer país del mundo en otorgar el voto a las mujeres.', economia:'Su economía se basa en la agricultura (lácteos, carne ovina, kiwi), el turismo, la industria tecnológica y el cine (fue escenario de El Señor de los Anillos).', cultura:'Nueva Zelanda es famosa por la cultura maorí y el haka, los paisajes naturales espectaculares, el rugby (All Blacks), los kiwis y su espíritu de aventura y ecoturismo.' },
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const nombrePais = params.get('pais') || 'El Salvador';
+    const datos = datosPaises[nombrePais];
+
+    if (datos) {
+      const flagUrl = `https://flagcdn.com/160x120/${datos.codigo}.png`;
+      document.getElementById('bandera-img').src = flagUrl;
+      document.getElementById('bandera-img').alt = `Bandera de ${nombrePais}`;
+      document.getElementById('nombre-pais').textContent = nombrePais;
+      document.getElementById('capital').textContent = datos.capital;
+      document.getElementById('poblacion').textContent = datos.poblacion;
+      document.getElementById('idioma').textContent = datos.idioma;
+      document.getElementById('continente').textContent = datos.continente;
+      document.getElementById('historia').textContent = datos.historia;
+      document.getElementById('economia').textContent = datos.economia;
+      document.getElementById('cultura').textContent = datos.cultura;
+      document.title = `${nombrePais} - Atlas Interactivo`;
+    } else {
+      document.getElementById('nombre-pais').textContent = 'País no encontrado';
+    }
+
+    // Buscador
+    const listaPaises = Object.keys(datosPaises);
+    const input = document.getElementById('buscador');
+    const lista = document.getElementById('sugerencias');
+
+    input.addEventListener('input', () => {
+      const valor = input.value.toLowerCase();
+      lista.innerHTML = '';
+      if (valor === '') return;
+      listaPaises.filter(p => p.toLowerCase().includes(valor)).forEach(p => {
+        const li = document.createElement('li');
+        const cod = datosPaises[p].codigo;
+        li.innerHTML = `<img src="https://flagcdn.com/20x15/${cod}.png" style="width:20px;height:15px;border-radius:2px;margin-right:8px;vertical-align:middle;"> ${p}`;
+        li.addEventListener('click', () => {
+          window.location.href = `pais.html?pais=${encodeURIComponent(p)}`;
+        });
+        lista.appendChild(li);
+      });
+    });
+  </script>
+</body>
+</html>

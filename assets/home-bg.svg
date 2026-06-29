@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4e1f8a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6c2eb9;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#00c9a7;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#00c9a7;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Fondo base -->
+  <rect width="1440" height="900" fill="url(#bgGrad)"/>
+
+  <!-- Resplandor central -->
+  <ellipse cx="720" cy="450" rx="600" ry="400" fill="url(#glow)"/>
+
+  <!-- Cuadrícula de mapa (meridianos y paralelos) -->
+  <!-- Líneas horizontales (paralelos) -->
+  <line x1="0" y1="150" x2="1440" y2="150" stroke="white" stroke-width="0.5" opacity="0.08"/>
+  <line x1="0" y1="300" x2="1440" y2="300" stroke="white" stroke-width="0.5" opacity="0.08"/>
+  <line x1="0" y1="450" x2="1440" y2="450" stroke="white" stroke-width="0.8" opacity="0.12"/>
+  <line x1="0" y1="600" x2="1440" y2="600" stroke="white" stroke-width="0.5" opacity="0.08"/>
+  <line x1="0" y1="750" x2="1440" y2="750" stroke="white" stroke-width="0.5" opacity="0.08"/>
+
+  <!-- Líneas verticales (meridianos) -->
+  <line x1="180" y1="0" x2="180" y2="900" stroke="white" stroke-width="0.5" opacity="0.08"/>
+  <line x1="360" y1="0" x2="360" y2="900" stroke="white" stroke-width="0.5" opacity="0.08"/>
+  <line x1="540" y1="0" x2="540" y2="900" stroke="white" stroke-width="0.5" opacity="0.08"/>
+  <line x1="720" y1="0" x2="720" y2="900" stroke="white" stroke-width="0.8" opacity="0.12"/>
+  <line x1="900" y1="0" x2="900" y2="900" stroke="white" stroke-width="0.5" opacity="0.08"/>
+  <line x1="1080" y1="0" x2="1080" y2="900" stroke="white" stroke-width="0.5" opacity="0.08"/>
+  <line x1="1260" y1="0" x2="1260" y2="900" stroke="white" stroke-width="0.5" opacity="0.08"/>
+
+  <!-- Continentes estilizados (formas simples) -->
+  <!-- América del Norte -->
+  <path d="M 120 180 Q 200 160 280 200 Q 320 260 300 340 Q 260 380 200 360 Q 140 320 120 260 Z"
+        fill="#00c9a7" opacity="0.18"/>
+  <!-- América del Sur -->
+  <path d="M 220 420 Q 290 400 310 460 Q 330 540 290 600 Q 250 630 210 590 Q 180 540 200 480 Z"
+        fill="#00c9a7" opacity="0.18"/>
+  <!-- Europa -->
+  <path d="M 580 160 Q 640 150 680 180 Q 700 220 670 250 Q 630 260 590 240 Q 560 210 580 160 Z"
+        fill="#00c9a7" opacity="0.18"/>
+  <!-- África -->
+  <path d="M 600 290 Q 680 270 720 330 Q 750 410 720 500 Q 680 540 630 510 Q 580 470 570 390 Q 560 320 600 290 Z"
+        fill="#00c9a7" opacity="0.18"/>
+  <!-- Asia -->
+  <path d="M 750 140 Q 900 120 1020 170 Q 1080 220 1060 300 Q 1000 350 900 340 Q 800 320 760 260 Q 730 200 750 140 Z"
+        fill="#00c9a7" opacity="0.18"/>
+  <!-- Australia -->
+  <path d="M 1080 460 Q 1160 440 1200 490 Q 1220 540 1190 580 Q 1150 600 1100 570 Q 1060 530 1080 460 Z"
+        fill="#00c9a7" opacity="0.18"/>
+
+  <!-- Puntos de ciudades/marcadores decorativos -->
+  <circle cx="250" cy="280" r="4" fill="#00c9a7" opacity="0.5"/>
+  <circle cx="250" cy="280" r="10" fill="none" stroke="#00c9a7" stroke-width="1" opacity="0.3"/>
+
+  <circle cx="640" cy="200" r="4" fill="#00c9a7" opacity="0.5"/>
+  <circle cx="640" cy="200" r="10" fill="none" stroke="#00c9a7" stroke-width="1" opacity="0.3"/>
+
+  <circle cx="870" cy="220" r="4" fill="#00c9a7" opacity="0.5"/>
+  <circle cx="870" cy="220" r="10" fill="none" stroke="#00c9a7" stroke-width="1" opacity="0.3"/>
+
+  <circle cx="660" cy="400" r="4" fill="#00c9a7" opacity="0.5"/>
+  <circle cx="660" cy="400" r="10" fill="none" stroke="#00c9a7" stroke-width="1" opacity="0.3"/>
+
+  <circle cx="270" cy="500" r="4" fill="#00c9a7" opacity="0.5"/>
+  <circle cx="270" cy="500" r="10" fill="none" stroke="#00c9a7" stroke-width="1" opacity="0.3"/>
+
+  <circle cx="1140" cy="510" r="4" fill="#00c9a7" opacity="0.5"/>
+  <circle cx="1140" cy="510" r="10" fill="none" stroke="#00c9a7" stroke-width="1" opacity="0.3"/>
+
+  <!-- Estrellas/partículas decorativas -->
+  <circle cx="100" cy="80" r="2" fill="white" opacity="0.3"/>
+  <circle cx="400" cy="50" r="1.5" fill="white" opacity="0.25"/>
+  <circle cx="800" cy="80" r="2" fill="white" opacity="0.3"/>
+  <circle cx="1200" cy="100" r="1.5" fill="white" opacity="0.25"/>
+  <circle cx="1380" cy="60" r="2" fill="white" opacity="0.3"/>
+  <circle cx="50" cy="500" r="1.5" fill="white" opacity="0.2"/>
+  <circle cx="1400" cy="700" r="2" fill="white" opacity="0.25"/>
+  <circle cx="500" cy="820" r="1.5" fill="white" opacity="0.2"/>
+  <circle cx="950" cy="860" r="2" fill="white" opacity="0.25"/>
+</svg>

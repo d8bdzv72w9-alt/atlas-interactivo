@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mapa Interactivo - Atlas</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <link rel="stylesheet" href="style/style.css" />
+  <style>
+    #mapa-leaflet {
+      width: 100%;
+      height: calc(100vh - 64px - 52px);
+      z-index: 1;
+    }
+    .leaflet-popup-content-wrapper {
+      border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      padding: 0;
+      overflow: hidden;
+    }
+    .leaflet-popup-content {
+      margin: 0;
+      width: 220px !important;
+    }
+    .popup-inner {
+      padding: 16px;
+      text-align: center;
+    }
+    .popup-bandera {
+      width: 72px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .popup-nombre {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #6c2eb9;
+      margin-bottom: 4px;
+    }
+    .popup-capital {
+      font-size: 0.82rem;
+      color: #666;
+      margin-bottom: 12px;
+    }
+    .popup-btn {
+      display: block;
+      background: #6c2eb9;
+      color: white;
+      text-decoration: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .popup-btn:hover { background: #4e1f8a; }
+    .marcador-custom {
+      background: #6c2eb9;
+      border: 3px solid white;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .marcador-custom:hover {
+      transform: scale(1.4);
+      background: #00c9a7;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-logo"> Atlas Interactivo</div>
+    <div class="nav-center">
+      <input type="text" id="buscador" class="search-input" placeholder=" Buscar país..." autocomplete="off" />
+      <ul id="sugerencias" class="sugerencias-lista"></ul>
+    </div>
+    <a href="quiz.html" class="btn-quiz">Quiz</a>
+  </nav>
+
+  <div id="mapa-leaflet"></div>
+
+  <footer class="footer">
+    <p>Elaborado por: Oswaldo Ernesto Trinidad Campos &amp; Gerson Armando Villalta Reyna &mdash; Bach. Técnico Desarrollo de Software 3-3 &mdash; INFRAMEN 2026</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script>
+    const paises = [
+      // América del Norte
+      { nombre: 'México',           codigo: 'mx', capital: 'Ciudad de México', lat: 23.6345,  lng: -102.5528 },
+      { nombre: 'Estados Unidos',   codigo: 'us', capital: 'Washington D.C.',  lat: 37.0902,  lng:  -95.7129 },
+      { nombre: 'Canadá',           codigo: 'ca', capital: 'Ottawa',           lat: 56.1304,  lng:  -106.3468 },
+      { nombre: 'Cuba',             codigo: 'cu', capital: 'La Habana',        lat: 21.5218,  lng:  -77.7812 },
+      // América Central
+      { nombre: 'El Salvador',      codigo: 'sv', capital: 'San Salvador',     lat: 13.7942,  lng:  -88.8965 },
+      { nombre: 'Guatemala',        codigo: 'gt', capital: 'Ciudad de Guatemala', lat: 15.7835, lng: -90.2308 },
+      { nombre: 'Honduras',         codigo: 'hn', capital: 'Tegucigalpa',      lat: 15.1999,  lng:  -86.2419 },
+      // América del Sur
+      { nombre: 'Argentina',        codigo: 'ar', capital: 'Buenos Aires',     lat: -38.4161, lng:  -63.6167 },
+      { nombre: 'Brasil',           codigo: 'br', capital: 'Brasilia',         lat: -14.2350, lng:  -51.9253 },
+      { nombre: 'Colombia',         codigo: 'co', capital: 'Bogotá',           lat:   4.5709, lng:  -74.2973 },
+      { nombre: 'Chile',            codigo: 'cl', capital: 'Santiago',         lat: -35.6751, lng:  -71.5430 },
+      { nombre: 'Perú',             codigo: 'pe', capital: 'Lima',             lat:  -9.1900, lng:  -75.0152 },
+      { nombre: 'Venezuela',        codigo: 've', capital: 'Caracas',          lat:   6.4238, lng:  -66.5897 },
+      // Europa
+      { nombre: 'Francia',          codigo: 'fr', capital: 'París',            lat: 46.2276,  lng:    2.2137 },
+      { nombre: 'España',           codigo: 'es', capital: 'Madrid',           lat: 40.4637,  lng:   -3.7492 },
+      { nombre: 'Alemania',         codigo: 'de', capital: 'Berlín',           lat: 51.1657,  lng:   10.4515 },
+      { nombre: 'Italia',           codigo: 'it', capital: 'Roma',             lat: 41.8719,  lng:   12.5674 },
+      { nombre: 'Reino Unido',      codigo: 'gb', capital: 'Londres',          lat: 55.3781,  lng:   -3.4360 },
+      { nombre: 'Portugal',         codigo: 'pt', capital: 'Lisboa',           lat: 39.3999,  lng:   -8.2245 },
+      { nombre: 'Rusia',            codigo: 'ru', capital: 'Moscú',            lat: 61.5240,  lng:  105.3188 },
+      // Asia
+      { nombre: 'China',            codigo: 'cn', capital: 'Pekín',            lat: 35.8617,  lng:  104.1954 },
+      { nombre: 'Japón',            codigo: 'jp', capital: 'Tokio',            lat: 36.2048,  lng:  138.2529 },
+      { nombre: 'India',            codigo: 'in', capital: 'Nueva Delhi',      lat: 20.5937,  lng:   78.9629 },
+      { nombre: 'Corea del Sur',    codigo: 'kr', capital: 'Seúl',             lat: 35.9078,  lng:  127.7669 },
+      { nombre: 'Arabia Saudita',   codigo: 'sa', capital: 'Riad',             lat: 23.8859,  lng:   45.0792 },
+      // África
+      { nombre: 'Kenia',            codigo: 'ke', capital: 'Nairobi',          lat:  -0.0236, lng:   37.9062 },
+      { nombre: 'Nigeria',          codigo: 'ng', capital: 'Abuya',            lat:   9.0820, lng:    8.6753 },
+      { nombre: 'Egipto',           codigo: 'eg', capital: 'El Cairo',         lat: 26.8206,  lng:   30.8025 },
+      { nombre: 'Sudáfrica',        codigo: 'za', capital: 'Pretoria',         lat: -30.5595, lng:   22.9375 },
+      { nombre: 'Marruecos',        codigo: 'ma', capital: 'Rabat',            lat: 31.7917,  lng:   -7.0926 },
+      // Oceanía
+      { nombre: 'Australia',        codigo: 'au', capital: 'Canberra',         lat: -25.2744, lng:  133.7751 },
+      { nombre: 'Nueva Zelanda',    codigo: 'nz', capital: 'Wellington',       lat: -40.9006, lng:  174.8860 },
+    ];
+
+    const mapa = L.map('mapa-leaflet', {
+      center: [20, 10],
+      zoom: 2,
+      minZoom: 2,
+      maxZoom: 6,
+      zoomControl: true,
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom: 19,
+    }).addTo(mapa);
+
+    const iconoPais = L.divIcon({
+      className: 'marcador-custom',
+      iconSize: [16, 16],
+      iconAnchor: [8, 8],
+      popupAnchor: [0, -12],
+    });
+
+    paises.forEach(p => {
+      const marcador = L.marker([p.lat, p.lng], { icon: iconoPais }).addTo(mapa);
+      const flagUrl = `https://flagcdn.com/72x54/${p.codigo}.png`;
+      const popupHTML = `
+        <div class="popup-inner">
+          <img class="popup-bandera" src="${flagUrl}" alt="Bandera de ${p.nombre}" />
+          <div class="popup-nombre">${p.nombre}</div>
+          <div class="popup-capital">Capital: ${p.capital}</div>
+          <a class="popup-btn" href="pais.html?pais=${encodeURIComponent(p.nombre)}">Ver información →</a>
+        </div>`;
+      marcador.bindPopup(popupHTML, { maxWidth: 220 });
+      marcador.on('click', () => marcador.openPopup());
+    });
+
+    // Buscador
+    const input = document.getElementById('buscador');
+    const lista = document.getElementById('sugerencias');
+
+    input.addEventListener('input', () => {
+      const valor = input.value.toLowerCase();
+      lista.innerHTML = '';
+      if (valor === '') return;
+      const filtrados = paises.filter(p => p.nombre.toLowerCase().includes(valor));
+      filtrados.forEach(p => {
+        const li = document.createElement('li');
+        const flagUrl = `https://flagcdn.com/20x15/${p.codigo}.png`;
+        li.innerHTML = `<img src="${flagUrl}" style="width:20px;height:15px;border-radius:2px;margin-right:8px;vertical-align:middle;"> ${p.nombre}`;
+        li.addEventListener('click', () => {
+          input.value = p.nombre;
+          lista.innerHTML = '';
+          mapa.flyTo([p.lat, p.lng], 5, { duration: 1.2 });
+          setTimeout(() => {
+            window.location.href = `pais.html?pais=${encodeURIComponent(p.nombre)}`;
+          }, 1400);
+        });
+        lista.appendChild(li);
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.nav-center')) lista.innerHTML = '';
+    });
+  </script>
+</body>
+</html>

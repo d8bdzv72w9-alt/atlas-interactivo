@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz - Atlas Interactivo</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="style/style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-logo"> Atlas Interactivo</div>
+    <a href="mapa.html" class="btn-quiz">← Volver al Mapa</a>
+  </nav>
+
+  <!-- QUIZ -->
+  <main class="quiz-container">
+
+    <!-- Pantalla de inicio del Quiz -->
+    <div id="pantalla-inicio" class="quiz-card">
+      <div class="quiz-inicio-icon"></div>
+      <h1>Quiz de Geografía</h1>
+      <p>Pon a prueba tus conocimientos sobre países, capitales, culturas e historia del mundo.</p>
+      <p class="quiz-info">10 preguntas &nbsp;·&nbsp; 1 punto por respuesta correcta</p>
+      <button class="btn-primary" onclick="iniciarQuiz()">Comenzar Quiz</button>
+    </div>
+
+    <!-- Pantalla de pregunta -->
+    <div id="pantalla-pregunta" class="quiz-card" style="display:none;">
+      <div class="quiz-top">
+        <span id="contador-pregunta" class="quiz-contador">Pregunta 1 de 10</span>
+        <span id="puntuacion-top" class="quiz-puntuacion">Puntuación: 0</span>
+      </div>
+
+      <div class="quiz-progress-bar">
+        <div id="barra-progreso" class="quiz-progress-fill" style="width: 10%;"></div>
+      </div>
+
+      <div class="quiz-pregunta-box">
+        <p id="texto-pregunta" class="quiz-pregunta-texto">¿Cuál es la capital de Francia?</p>
+      </div>
+
+      <div id="opciones-container" class="quiz-opciones"></div>
+
+      <button id="btn-siguiente" class="btn-primary quiz-btn-siguiente" onclick="siguientePregunta()" style="display:none;">
+        Siguiente →
+      </button>
+    </div>
+
+    <!-- Pantalla de resultado -->
+    <div id="pantalla-resultado" class="quiz-card" style="display:none;">
+      <div id="resultado-emoji" class="quiz-resultado-emoji"></div>
+      <h2>¡Quiz Completado!</h2>
+      <div id="resultado-puntos" class="quiz-resultado-puntos">8/10</div>
+      <p id="resultado-mensaje" class="quiz-resultado-mensaje">¡Excelente trabajo!</p>
+      <div class="quiz-resultado-btns">
+        <button class="btn-primary" onclick="reiniciarQuiz()">Reintentar</button>
+        <a href="mapa.html" class="btn-secundario">Volver al mapa</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>Elaborado por: Oswaldo Ernesto Trinidad Campos &amp; Gerson Armando Villalta Reyna &mdash; Bach. Técnico Desarrollo de Software 3-3 &mdash; INFRAMEN 2026</p>
+  </footer>
+
+  <script>
+    const preguntas = [
+      { pregunta: '¿Cuál es la capital de Francia?', opciones: ['Londres', 'París', 'Berlín', 'Madrid'], correcta: 1 },
+      { pregunta: '¿En qué continente se encuentra Kenia?', opciones: ['Asia', 'Europa', 'África', 'América'], correcta: 2 },
+      { pregunta: '¿Cuál es el idioma oficial de Japón?', opciones: ['Chino', 'Coreano', 'Japonés', 'Tailandés'], correcta: 2 },
+      { pregunta: '¿Cuál es la capital de Argentina?', opciones: ['Santiago', 'Lima', 'Montevideo', 'Buenos Aires'], correcta: 3 },
+      { pregunta: '¿Qué país tiene la mayor población del mundo?', opciones: ['India', 'China', 'Estados Unidos', 'Indonesia'], correcta: 1 },
+      { pregunta: '¿Cuál es la capital de México?', opciones: ['Guadalajara', 'Monterrey', 'Ciudad de México', 'Tijuana'], correcta: 2 },
+      { pregunta: '¿El tango es originario de qué país?', opciones: ['Brasil', 'Colombia', 'Uruguay', 'Argentina'], correcta: 3 },
+      { pregunta: '¿Cuál es la segunda economía más grande del mundo?', opciones: ['Japón', 'China', 'Alemania', 'India'], correcta: 1 },
+      { pregunta: '¿Qué ciudad es la capital de China?', opciones: ['Shanghái', 'Hong Kong', 'Pekín', 'Cantón'], correcta: 2 },
+      { pregunta: '¿En qué año obtuvo su independencia México?', opciones: ['1810', '1821', '1910', '1776'], correcta: 1 }
+    ];
+
+    let preguntaActual = 0;
+    let puntuacion = 0;
+    let respondida = false;
+
+    function iniciarQuiz() {
+      preguntaActual = 0;
+      puntuacion = 0;
+      respondida = false;
+      document.getElementById('pantalla-inicio').style.display = 'none';
+      document.getElementById('pantalla-resultado').style.display = 'none';
+      document.getElementById('pantalla-pregunta').style.display = 'flex';
+      mostrarPregunta();
+    }
+
+    function mostrarPregunta() {
+      respondida = false;
+      const p = preguntas[preguntaActual];
+      document.getElementById('contador-pregunta').textContent = `Pregunta ${preguntaActual + 1} de ${preguntas.length}`;
+      document.getElementById('puntuacion-top').textContent = `Puntuación: ${puntuacion}`;
+      document.getElementById('barra-progreso').style.width = `${((preguntaActual + 1) / preguntas.length) * 100}%`;
+      document.getElementById('texto-pregunta').textContent = p.pregunta;
+      document.getElementById('btn-siguiente').style.display = 'none';
+
+      const contenedor = document.getElementById('opciones-container');
+      contenedor.innerHTML = '';
+      p.opciones.forEach((opcion, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-opcion';
+        btn.textContent = opcion;
+        btn.onclick = () => seleccionarRespuesta(i, btn);
+        contenedor.appendChild(btn);
+      });
+    }
+
+    function seleccionarRespuesta(indice, btnSeleccionado) {
+      if (respondida) return;
+      respondida = true;
+
+      const correcta = preguntas[preguntaActual].correcta;
+      const opciones = document.querySelectorAll('.quiz-opcion');
+
+      opciones.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === correcta) btn.classList.add('correcta');
+        else if (i === indice && indice !== correcta) btn.classList.add('incorrecta');
+      });
+
+      if (indice === correcta) puntuacion++;
+      document.getElementById('puntuacion-top').textContent = `Puntuación: ${puntuacion}`;
+      document.getElementById('btn-siguiente').style.display = 'block';
+    }
+
+    function siguientePregunta() {
+      preguntaActual++;
+      if (preguntaActual < preguntas.length) {
+        mostrarPregunta();
+      } else {
+        mostrarResultado();
+      }
+    }
+
+    function mostrarResultado() {
+      document.getElementById('pantalla-pregunta').style.display = 'none';
+      document.getElementById('pantalla-resultado').style.display = 'flex';
+      document.getElementById('resultado-puntos').textContent = `${puntuacion}/${preguntas.length}`;
+
+      let emoji = '';
+      let mensaje = 'Sigue practicando, ¡puedes mejorar!';
+      if (puntuacion >= 9) { emoji = ''; mensaje = '¡Perfecto! Eres un experto en geografía.'; }
+      else if (puntuacion >= 7) { emoji = ''; mensaje = '¡Excelente trabajo! Muy buen resultado.'; }
+      else if (puntuacion >= 5) { emoji = ''; mensaje = '¡Bien hecho! Sigue explorando el atlas.'; }
+
+      document.getElementById('resultado-emoji').textContent = emoji;
+      document.getElementById('resultado-mensaje').textContent = mensaje;
+    }
+
+    function reiniciarQuiz() {
+      iniciarQuiz();
+    }
+  </script>
+
+</body>
+</html>
